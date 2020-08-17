@@ -4,7 +4,6 @@ export const SHeader = styled.header`
   ${({ theme: { flexin } }) => flexin()};
   grid-area: header;
   justify-content: end;
-  border-bottom: 1px solid white;
 
   span {
     ${({ theme: { fontLine } }) => fontLine(20, 21)};

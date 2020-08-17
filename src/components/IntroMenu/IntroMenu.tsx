@@ -1,9 +1,10 @@
 import React, { MutableRefObject, useEffect, useRef } from "react";
-import { Section, H1, Nav, NavButton } from "./IntroMenu.style";
+import { Section, H1 } from "./IntroMenu.style";
 import { useFocus } from "../../hooks/useFocus";
-import { useInput, useGame } from "../../hooks/useContext";
+import { useGame } from "../../hooks/useContext";
 import { AnimatePresence } from "framer-motion";
 import { menuMountAnimation } from "../../styles/animations";
+import { Nav, NavButton } from "../../styles/MenuNav";
 
 export function IntroMenu() {
   const { startGame } = useGame();

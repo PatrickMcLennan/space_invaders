@@ -17,7 +17,7 @@ export function keyReducer({ key }: KeyboardEvent): AcceptedKey | false {
     case `arrowright`:
     case `d`:
       return AcceptedKey.Right;
-    case `down` || `arrowdown` || `s`:
+    case `down`:
     case `arrowdown`:
     case `s`:
       return AcceptedKey.Down;
