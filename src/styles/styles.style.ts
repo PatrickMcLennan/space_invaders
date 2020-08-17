@@ -8,7 +8,7 @@ import { GameState } from "../types/GameState.type";
 export const GlobalStyles: GlobalStyleComponent<{}, {}> = createGlobalStyle`
 
     :root {
-        --next-position: 100;
+        --next-position: 1200;
     }
 
     @font-face {
@@ -56,7 +56,7 @@ export const GlobalStyles: GlobalStyleComponent<{}, {}> = createGlobalStyle`
         font-family: arcadeFont;
         overflow-x: hidden;
         overflow-y: scroll;
-        transition: background-position 5.5s linear;
+        transition: background-position 60s linear;
         z-index: 1;
     }
 

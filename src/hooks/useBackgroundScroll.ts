@@ -4,9 +4,9 @@ export function useBackgroundScroll() {
       getComputedStyle(document.documentElement).getPropertyValue(`--next-position`).split(`%`)[0]
     );
 
-    document.documentElement.style.setProperty(`--next-position`, `${currentValue + 100}%`);
+    document.documentElement.style.setProperty(`--next-position`, `${currentValue + 1200}%`);
 
-    return setTimeout(() => createNewPosition(), 5500);
+    return setTimeout(() => createNewPosition(), 60000);
   };
 
   return createNewPosition();

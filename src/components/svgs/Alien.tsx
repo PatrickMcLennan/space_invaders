@@ -5,7 +5,7 @@ const SVG = styled.svg`
   ${({ theme: { svgSize } }) => svgSize}
 `;
 
-export function Alien() {
+export function Alien({ x, y }) {
   return (
     <SVG version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 512 512">
       <path

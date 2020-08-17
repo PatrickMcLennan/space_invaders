@@ -12,23 +12,30 @@ export function InputContextProvider({ children }) {
   });
 
   const keyIsDown: (e: KeyboardEvent) => void = (e) => {
+    e.stopImmediatePropagation();
     const key: AcceptedKey | false = keyReducer(e);
     if (!key || e.repeat) return;
     else
       return setInputState((prevState) => ({
         keyIsDown: true,
-        currentKeyPresses: [key, ...prevState.currentKeyPresses],
+        currentKeyPresses: [
+          key,
+          ...prevState.currentKeyPresses.filter(
+            (currentKey, i, allKeys) => allKeys.indexOf(currentKey) === i && currentKey !== key
+          ),
+        ],
         lastKeyPresses: prevState.lastKeyPresses,
       }));
   };
 
   const keyIsUp: (e: KeyboardEvent) => void = (e) => {
+    e.stopImmediatePropagation();
     const key: AcceptedKey | false = keyReducer(e);
     if (!key || e.repeat) return;
     else
       return setInputState((prevState) => ({
         keyIsDown: !prevState.currentKeyPresses.filter((currentKey) => currentKey === key).length,
-        currentKeyPresses: prevState.currentKeyPresses.filter((currentKey) => currentKey === key),
+        currentKeyPresses: prevState.currentKeyPresses.filter((currentKey) => currentKey !== key),
         lastKeyPresses: [key, ...prevState.lastKeyPresses.slice(0, 3)],
       }));
   };

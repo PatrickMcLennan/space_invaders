@@ -1,78 +1,44 @@
-import React, { useEffect, useRef, useState, MutableRefObject, Dispatch, SetStateAction } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { useInput } from "../../hooks/useContext";
 import { AcceptedKey } from "../../types/Keypresses.type";
 
-type Coords = { x: number; y: number };
-type SetCoords = Dispatch<SetStateAction<Coords>>;
-
 const SVG = styled(motion.svg)`
   ${({ theme: { svgSize } }) => svgSize};
+  margin: auto auto 50px auto;
   fill: white;
 `;
 
 export function Spaceship() {
   const { inputState } = useInput();
-  const [position, setPosition]: [Coords, SetCoords] = useState({ x: 0, y: 0 });
+  const [x, y] = [useMotionValue(0), useMotionValue(0)];
+  const CONTINUE_MOVEMENT = inputState.keyIsDown;
 
-  const moveReducer = () => {
-    const { keyIsDown, currentKeyPresses } = inputState;
-    if (currentKeyPresses.length) {
-      if (![`Up`, `Right`, `Left`, `Down`].map((key) => currentKeyPresses.includes(AcceptedKey[key])).length) return;
-      if (currentKeyPresses.includes(AcceptedKey.Up) && currentKeyPresses.includes(AcceptedKey.Right))
-        setPosition(({ x, y }) => ({
-          x: x + 1,
-          y: y - 1,
-        }));
-      else if (currentKeyPresses.includes(AcceptedKey.Up) && currentKeyPresses.includes(AcceptedKey.Left))
-        setPosition(({ x, y }) => ({
-          x: x - 1,
-          y: y - 1,
-        }));
-      else if (currentKeyPresses.includes(AcceptedKey.Down) && currentKeyPresses.includes(AcceptedKey.Right))
-        setPosition(({ x, y }) => ({
-          x: x + 1,
-          y: y + 1,
-        }));
-      else if (currentKeyPresses.includes(AcceptedKey.Down) && currentKeyPresses.includes(AcceptedKey.Left))
-        setPosition(({ x, y }) => ({
-          x: x - 1,
-          y: y + 1,
-        }));
-      else if (currentKeyPresses.includes(AcceptedKey.Up))
-        setPosition(({ x, y }) => ({
-          x,
-          y: y - 1,
-        }));
-      else if (currentKeyPresses.includes(AcceptedKey.Right))
-        setPosition(({ x, y }) => ({
-          x: x + 1,
-          y,
-        }));
-      else if (currentKeyPresses.includes(AcceptedKey.Down))
-        setPosition(({ x, y }) => ({
-          x,
-          y: y + 1,
-        }));
-      else if (currentKeyPresses.includes(AcceptedKey.Left))
-        setPosition(({ x, y }) => ({
-          x: x - 1,
-          y,
-        }));
-      return setTimeout(() => {
-        moveReducer();
-      }, 250);
-    } else return;
+  const moveShip = (newX, newY) => {
+    x.set(x.get() + newX);
+    y.set(y.get() + newY);
+    if (CONTINUE_MOVEMENT) return setTimeout(() => moveShip(x.get() + newX, y.get() + newY), 1000);
   };
 
-  useEffect(() => {
-    if (inputState.keyIsDown) moveReducer();
-  }, [inputState.keyIsDown]);
+  const { keyIsDown, currentKeyPresses } = inputState;
+  if (keyIsDown && currentKeyPresses.length) {
+    if (currentKeyPresses.includes(AcceptedKey.Up) && currentKeyPresses.includes(AcceptedKey.Right)) moveShip(1, -1);
+    else if (currentKeyPresses.includes(AcceptedKey.Up) && currentKeyPresses.includes(AcceptedKey.Left))
+      moveShip(-1, -1);
+    else if (currentKeyPresses.includes(AcceptedKey.Down) && currentKeyPresses.includes(AcceptedKey.Right))
+      moveShip(1, 1);
+    else if (currentKeyPresses.includes(AcceptedKey.Down) && currentKeyPresses.includes(AcceptedKey.Left))
+      moveShip(-1, 1);
+    else if (currentKeyPresses.includes(AcceptedKey.Up)) moveShip(0, -1);
+    else if (currentKeyPresses.includes(AcceptedKey.Right)) moveShip(1, 0);
+    else if (currentKeyPresses.includes(AcceptedKey.Down)) moveShip(0, 1);
+    else if (currentKeyPresses.includes(AcceptedKey.Left)) moveShip(-1, 0);
+  }
 
   return (
-    <SVG version="1.1" x="0px" y="0px" viewBox="0 0 572.146 572.146">
+    <SVG version="1.1" animate={{ x: x.get(), y: y.get() }} viewBox="0 0 572.146 572.146">
       <g>
         <g>
           <path

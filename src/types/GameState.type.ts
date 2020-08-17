@@ -11,4 +11,5 @@ export type GameStateProvider = {
   gameState: GameState;
   setGameState: SetGameState;
   startGame: () => void;
+  pauseGame: (menu: GameState["currentMenu"]) => void;
 };

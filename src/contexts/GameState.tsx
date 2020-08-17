@@ -15,7 +15,15 @@ export function GameContextProvider({ children }) {
       currentMenu: null,
     });
 
-  return <GameContext.Provider value={{ gameState, setGameState, startGame }}>{children}</GameContext.Provider>;
+  const pauseGame: (menu: GameState["currentMenu"]) => void = (menu) =>
+    setGameState({
+      game: `PAUSED`,
+      currentMenu: menu,
+    });
+
+  return (
+    <GameContext.Provider value={{ gameState, setGameState, startGame, pauseGame }}>{children}</GameContext.Provider>
+  );
 }
 
 export const GameContextConsumer: Consumer<GameStateProvider> = GameContext.Consumer;
