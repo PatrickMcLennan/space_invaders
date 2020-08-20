@@ -1,4 +1,4 @@
-import React, { MutableRefObject, forwardRef, RefAttributes, RefObject } from "react";
+import React, { MutableRefObject, forwardRef, RefAttributes, RefObject, useEffect } from "react";
 import styled from "styled-components";
 
 import { motion } from "framer-motion";
@@ -27,20 +27,22 @@ export const Spaceship = forwardRef(({ coords }, spaceship) => {
     y.set(y.get() + newY);
   };
 
-  if (keyIsDown && currentKeyPresses.length) {
-    if (currentKeyPresses.includes(AcceptedKey.Up) && currentKeyPresses.includes(AcceptedKey.Right))
-      moveShip(PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
-    else if (currentKeyPresses.includes(AcceptedKey.Up) && currentKeyPresses.includes(AcceptedKey.Left))
-      moveShip(-PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
-    else if (currentKeyPresses.includes(AcceptedKey.Down) && currentKeyPresses.includes(AcceptedKey.Right))
-      moveShip(PIXEL_MOVEMENT, PIXEL_MOVEMENT);
-    else if (currentKeyPresses.includes(AcceptedKey.Down) && currentKeyPresses.includes(AcceptedKey.Left))
-      moveShip(-PIXEL_MOVEMENT, PIXEL_MOVEMENT);
-    else if (currentKeyPresses.includes(AcceptedKey.Up)) moveShip(0, -PIXEL_MOVEMENT);
-    else if (currentKeyPresses.includes(AcceptedKey.Right)) moveShip(PIXEL_MOVEMENT, 0);
-    else if (currentKeyPresses.includes(AcceptedKey.Down)) moveShip(0, PIXEL_MOVEMENT);
-    else if (currentKeyPresses.includes(AcceptedKey.Left)) moveShip(-PIXEL_MOVEMENT, 0);
-  }
+  useEffect(() => {
+    if (keyIsDown && currentKeyPresses.length) {
+      if (currentKeyPresses.includes(AcceptedKey.Up) && currentKeyPresses.includes(AcceptedKey.Right))
+        moveShip(PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
+      else if (currentKeyPresses.includes(AcceptedKey.Up) && currentKeyPresses.includes(AcceptedKey.Left))
+        moveShip(-PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
+      else if (currentKeyPresses.includes(AcceptedKey.Down) && currentKeyPresses.includes(AcceptedKey.Right))
+        moveShip(PIXEL_MOVEMENT, PIXEL_MOVEMENT);
+      else if (currentKeyPresses.includes(AcceptedKey.Down) && currentKeyPresses.includes(AcceptedKey.Left))
+        moveShip(-PIXEL_MOVEMENT, PIXEL_MOVEMENT);
+      else if (currentKeyPresses.includes(AcceptedKey.Up)) moveShip(0, -PIXEL_MOVEMENT);
+      else if (currentKeyPresses.includes(AcceptedKey.Right)) moveShip(PIXEL_MOVEMENT, 0);
+      else if (currentKeyPresses.includes(AcceptedKey.Down)) moveShip(0, PIXEL_MOVEMENT);
+      else if (currentKeyPresses.includes(AcceptedKey.Left)) moveShip(-PIXEL_MOVEMENT, 0);
+    }
+  }, [keyIsDown, currentKeyPresses]);
 
   console.log(currentKeyPresses);
 
