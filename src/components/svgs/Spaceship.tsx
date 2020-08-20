@@ -1,48 +1,56 @@
-import React, { useEffect } from "react";
+import React, { MutableRefObject, forwardRef, RefAttributes, RefObject } from "react";
 import styled from "styled-components";
 
-import { motion, useMotionValue } from "framer-motion";
+import { motion } from "framer-motion";
 import { useInput } from "../../hooks/useContext";
 import { AcceptedKey } from "../../types/Keypresses.type";
+import { Laser } from "./Laser";
+import { ElementCoords } from "../../types/ElementCoords";
 
 const SVG = styled(motion.svg)`
   ${({ theme: { svgSize } }) => svgSize};
   margin: auto auto 50px auto;
   fill: white;
+  transition: all 0.05s;
 `;
 
-export function Spaceship() {
-  const { inputState } = useInput();
-  const [x, y] = [useMotionValue(0), useMotionValue(0)];
-  const CONTINUE_MOVEMENT = inputState.keyIsDown;
+export const Spaceship = forwardRef(({ coords }, spaceship) => {
+  const { x, y } = coords;
+  const {
+    inputState: { keyIsDown, currentKeyPresses },
+  } = useInput();
+
+  const PIXEL_MOVEMENT: number = 20;
 
   const moveShip = (newX, newY) => {
     x.set(x.get() + newX);
     y.set(y.get() + newY);
-    if (CONTINUE_MOVEMENT) return setTimeout(() => moveShip(x.get() + newX, y.get() + newY), 1000);
   };
 
-  const { keyIsDown, currentKeyPresses } = inputState;
   if (keyIsDown && currentKeyPresses.length) {
-    if (currentKeyPresses.includes(AcceptedKey.Up) && currentKeyPresses.includes(AcceptedKey.Right)) moveShip(1, -1);
+    if (currentKeyPresses.includes(AcceptedKey.Up) && currentKeyPresses.includes(AcceptedKey.Right))
+      moveShip(PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
     else if (currentKeyPresses.includes(AcceptedKey.Up) && currentKeyPresses.includes(AcceptedKey.Left))
-      moveShip(-1, -1);
+      moveShip(-PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
     else if (currentKeyPresses.includes(AcceptedKey.Down) && currentKeyPresses.includes(AcceptedKey.Right))
-      moveShip(1, 1);
+      moveShip(PIXEL_MOVEMENT, PIXEL_MOVEMENT);
     else if (currentKeyPresses.includes(AcceptedKey.Down) && currentKeyPresses.includes(AcceptedKey.Left))
-      moveShip(-1, 1);
-    else if (currentKeyPresses.includes(AcceptedKey.Up)) moveShip(0, -1);
-    else if (currentKeyPresses.includes(AcceptedKey.Right)) moveShip(1, 0);
-    else if (currentKeyPresses.includes(AcceptedKey.Down)) moveShip(0, 1);
-    else if (currentKeyPresses.includes(AcceptedKey.Left)) moveShip(-1, 0);
+      moveShip(-PIXEL_MOVEMENT, PIXEL_MOVEMENT);
+    else if (currentKeyPresses.includes(AcceptedKey.Up)) moveShip(0, -PIXEL_MOVEMENT);
+    else if (currentKeyPresses.includes(AcceptedKey.Right)) moveShip(PIXEL_MOVEMENT, 0);
+    else if (currentKeyPresses.includes(AcceptedKey.Down)) moveShip(0, PIXEL_MOVEMENT);
+    else if (currentKeyPresses.includes(AcceptedKey.Left)) moveShip(-PIXEL_MOVEMENT, 0);
   }
 
+  console.log(currentKeyPresses);
+
   return (
-    <SVG version="1.1" animate={{ x: x.get(), y: y.get() }} viewBox="0 0 572.146 572.146">
-      <g>
+    <>
+      <SVG version="1.1" animate={{ x: x.get(), y: y.get() }} ref={spaceship} viewBox="0 0 572.146 572.146">
         <g>
-          <path
-            d="M37.691,414.201c3.863-4.102,7.622-11.705,7.077-36.078l109.366-10.979c-13.722,31.365-23.285,52.699-23.294,52.719
+          <g>
+            <path
+              d="M37.691,414.201c3.863-4.102,7.622-11.705,7.077-36.078l109.366-10.979c-13.722,31.365-23.285,52.699-23.294,52.719
 			c-0.191,0.41-0.344,0.832-0.469,1.262c-0.602,2.113-3.337,13.023,2.716,21.066c2.41,3.203,7.019,7.018,15.31,7.018
 			c4.083,0,8.635-0.926,13.933-2.83c8.807-3.174,20.407-6.004,33.957-8.318v22.566c0,5.289,4.274,9.562,9.562,9.562h57.375
 			c5.288,0,9.562-4.273,9.562-9.562v-29.223l18.159-0.143c4.112,0.037,6.952,0.123,10.528,0.229v29.137
@@ -61,24 +69,26 @@ export function Spaceship() {
 			c0.258,1.396-0.105,2.85-1.014,3.94c-0.899,1.09-2.247,1.721-3.672,1.721l0,0l0,0h-99.469l0,0c-1.521,0-2.945-0.717-3.844-1.941
 			C229.572,247.087,229.314,245.509,229.764,244.065z M291.91,275.201V394.57c0,6.1-4.284,11.062-9.562,11.062
 			s-9.562-4.973-9.562-11.062V275.201c0-6.101,4.284-11.064,9.562-11.064S291.91,269.11,291.91,275.201z"
-          />
+            />
+          </g>
         </g>
-      </g>
-      <g></g>
-      <g></g>
-      <g></g>
-      <g></g>
-      <g></g>
-      <g></g>
-      <g></g>
-      <g></g>
-      <g></g>
-      <g></g>
-      <g></g>
-      <g></g>
-      <g></g>
-      <g></g>
-      <g></g>
-    </SVG>
+        <g></g>
+        <g></g>
+        <g></g>
+        <g></g>
+        <g></g>
+        <g></g>
+        <g></g>
+        <g></g>
+        <g></g>
+        <g></g>
+        <g></g>
+        <g></g>
+        <g></g>
+        <g></g>
+        <g></g>
+      </SVG>
+      {keyIsDown && currentKeyPresses.includes(AcceptedKey.Shoot) && <Laser x={x} y={y} />}
+    </>
   );
-}
+});

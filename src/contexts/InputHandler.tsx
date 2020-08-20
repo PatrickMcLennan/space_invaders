@@ -14,7 +14,7 @@ export function InputContextProvider({ children }) {
   const keyIsDown: (e: KeyboardEvent) => void = (e) => {
     e.stopImmediatePropagation();
     const key: AcceptedKey | false = keyReducer(e);
-    if (!key || e.repeat) return;
+    if (!key) return;
     else
       return setInputState((prevState) => ({
         keyIsDown: true,
@@ -31,7 +31,8 @@ export function InputContextProvider({ children }) {
   const keyIsUp: (e: KeyboardEvent) => void = (e) => {
     e.stopImmediatePropagation();
     const key: AcceptedKey | false = keyReducer(e);
-    if (!key || e.repeat) return;
+    console.log(inputState.currentKeyPresses.filter((currentKey) => currentKey !== key));
+    if (!key) return;
     else
       return setInputState((prevState) => ({
         keyIsDown: !prevState.currentKeyPresses.filter((currentKey) => currentKey === key).length,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
 import { theme, GlobalStyles } from "./styles/styles.style";
 import { GameContextProvider } from "./contexts/GameState";
@@ -10,7 +10,14 @@ import { useBackgroundScroll } from "./hooks/useBackgroundScroll";
 import { BodyComponent } from "./components/BodyComponent/BodyComponent";
 
 function App(): JSX.Element {
+  const [wasm, setWasm]: [any, any] = useState();
+
   useBackgroundScroll();
+  //   useEffect(() => {
+  //     import(`./wasm/pkg`)
+  //       .then((wasm) => setWasm(wasm))
+  //       .catch(console.error);
+  //   }, []);
 
   return (
     <InputContextProvider>

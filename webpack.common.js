@@ -17,8 +17,15 @@ module.exports = {
       },
       {
         test: /\.(png|ttf)$/,
-        exclude: /(node_modules)/,
+        exclude: [/(node_modules)/, /\.wasm$/],
         use: `file-loader`,
+      },
+      {
+        test: /\.wasm$/,
+        include: path.resolve(__dirname, `src`),
+        use: {
+          loader: `wasm-loader`,
+        },
       },
     ],
   },

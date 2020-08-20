@@ -49,7 +49,7 @@ export const GlobalStyles: GlobalStyleComponent<{}, {}> = createGlobalStyle`
         grid-template-rows: .2fr 1fr .2fr;
         position: relative;
         background-image: url(${background});
-        background-position: 0 var(--next-position);
+        background-position: 0% var(--next-position);
         background-repeat: repeat-y;
         background-size: contain;
         color: white;

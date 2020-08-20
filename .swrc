@@ -3,9 +3,7 @@
     "parser": {
       "syntax": "typescript",
       "tsx": true,
-      "decorators": false,
-      "dynamicImport": false,
-      "topLevelAwait": true,
+      "dynamicImport": true,
       "minify": true
     },
     "env": {

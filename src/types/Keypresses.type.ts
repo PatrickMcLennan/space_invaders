@@ -25,7 +25,7 @@ export function keyReducer({ key }: KeyboardEvent): AcceptedKey | false {
     case `arrowleft`:
     case `a`:
       return AcceptedKey.Left;
-    case `space`:
+    case ` `:
       return AcceptedKey.Shoot;
     case `escape`:
       return AcceptedKey.Pause;
