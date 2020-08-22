@@ -1,54 +1,74 @@
-import React, { MutableRefObject, forwardRef, RefAttributes, RefObject, useEffect } from "react";
+import React, { useRef, RefObject } from "react";
 import styled from "styled-components";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { useInput } from "../../hooks/useContext";
 import { AcceptedKey } from "../../types/Keypresses.type";
-import { Laser } from "./Laser";
 import { ElementCoords } from "../../types/ElementCoords";
+
+const PIXEL_MOVEMENT: number = 20;
 
 const SVG = styled(motion.svg)`
   ${({ theme: { svgSize } }) => svgSize};
   margin: auto auto 50px auto;
   fill: white;
-  transition: all 0.05s;
+  backface-visibility: visible;
+  perspective: 500px;
+  transition: all 0.2s;
 `;
 
-export const Spaceship = forwardRef(({ coords }, spaceship) => {
-  const { x, y } = coords;
+export function Spaceship() {
   const {
-    inputState: { keyIsDown, currentKeyPresses },
+    inputState: { currentKeyPresses },
   } = useInput();
+  const [x, y]: [ElementCoords["x"], ElementCoords["y"]] = [useMotionValue(0), useMotionValue(0)];
+  const spaceship: RefObject<SVGSVGElement> = useRef(null);
 
-  const PIXEL_MOVEMENT: number = 20;
+  const keyIsPressed: (key: AcceptedKey) => boolean = (key) => currentKeyPresses.includes(key);
 
-  const moveShip = (newX, newY) => {
-    x.set(x.get() + newX);
-    y.set(y.get() + newY);
+  const newCoords = (newX, newY) => ({
+    x: x.get() + newX,
+    y: y.get() + newY,
+  });
+
+  const getNewPosition = () => {
+    if (keyIsPressed(AcceptedKey.Up) && keyIsPressed(AcceptedKey.Right))
+      return newCoords(PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
+    else if (keyIsPressed(AcceptedKey.Up) && keyIsPressed(AcceptedKey.Left))
+      return newCoords(-PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
+    else if (keyIsPressed(AcceptedKey.Down) && keyIsPressed(AcceptedKey.Right))
+      return newCoords(PIXEL_MOVEMENT, PIXEL_MOVEMENT);
+    else if (keyIsPressed(AcceptedKey.Down) && keyIsPressed(AcceptedKey.Left))
+      return newCoords(-PIXEL_MOVEMENT, PIXEL_MOVEMENT);
+    else if (keyIsPressed(AcceptedKey.Up)) return newCoords(0, -PIXEL_MOVEMENT);
+    else if (keyIsPressed(AcceptedKey.Right)) return newCoords(PIXEL_MOVEMENT, 0);
+    else if (keyIsPressed(AcceptedKey.Down)) return newCoords(0, PIXEL_MOVEMENT);
+    else if (keyIsPressed(AcceptedKey.Left)) return newCoords(-PIXEL_MOVEMENT, 0);
+    else return newCoords(0, 0);
   };
 
-  useEffect(() => {
-    if (keyIsDown && currentKeyPresses.length) {
-      if (currentKeyPresses.includes(AcceptedKey.Up) && currentKeyPresses.includes(AcceptedKey.Right))
-        moveShip(PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
-      else if (currentKeyPresses.includes(AcceptedKey.Up) && currentKeyPresses.includes(AcceptedKey.Left))
-        moveShip(-PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
-      else if (currentKeyPresses.includes(AcceptedKey.Down) && currentKeyPresses.includes(AcceptedKey.Right))
-        moveShip(PIXEL_MOVEMENT, PIXEL_MOVEMENT);
-      else if (currentKeyPresses.includes(AcceptedKey.Down) && currentKeyPresses.includes(AcceptedKey.Left))
-        moveShip(-PIXEL_MOVEMENT, PIXEL_MOVEMENT);
-      else if (currentKeyPresses.includes(AcceptedKey.Up)) moveShip(0, -PIXEL_MOVEMENT);
-      else if (currentKeyPresses.includes(AcceptedKey.Right)) moveShip(PIXEL_MOVEMENT, 0);
-      else if (currentKeyPresses.includes(AcceptedKey.Down)) moveShip(0, PIXEL_MOVEMENT);
-      else if (currentKeyPresses.includes(AcceptedKey.Left)) moveShip(-PIXEL_MOVEMENT, 0);
+  if (spaceship.current && currentKeyPresses.length) {
+    const { left, bottom, right, top } = spaceship.current.getBoundingClientRect();
+    const newPosition = getNewPosition();
+    if (
+      (top < 0 && currentKeyPresses.includes(AcceptedKey.Up)) ||
+      (bottom > window.innerHeight && currentKeyPresses.includes(AcceptedKey.Down))
+    )
+      x.set(newPosition.x);
+    else if (
+      (left < 0 && currentKeyPresses.includes(AcceptedKey.Left)) ||
+      (right > window.innerWidth && currentKeyPresses.includes(AcceptedKey.Right))
+    )
+      y.set(newPosition.y);
+    else {
+      x.set(newPosition.x);
+      y.set(newPosition.y);
     }
-  }, [keyIsDown, currentKeyPresses]);
-
-  console.log(currentKeyPresses);
+  }
 
   return (
     <>
-      <SVG version="1.1" animate={{ x: x.get(), y: y.get() }} ref={spaceship} viewBox="0 0 572.146 572.146">
+      <SVG version="1.1" style={{ x: x.get(), y: y.get() }} ref={spaceship} viewBox="0 0 572.146 572.146">
         <g>
           <g>
             <path
@@ -90,7 +110,6 @@ export const Spaceship = forwardRef(({ coords }, spaceship) => {
         <g></g>
         <g></g>
       </SVG>
-      {keyIsDown && currentKeyPresses.includes(AcceptedKey.Shoot) && <Laser x={x} y={y} />}
     </>
   );
-});
+}

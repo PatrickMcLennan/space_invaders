@@ -2,7 +2,7 @@ import { createGlobalStyle, css, FlattenSimpleInterpolation, GlobalStyleComponen
 
 import background from "../assets/background.png";
 import arcadeFont from "../assets/arcadeFont.ttf";
-import { GameState } from "../types/GameState.type";
+import { GameState, CurrentState } from "../types/GameState.type";
 
 // Global Resets
 export const GlobalStyles: GlobalStyleComponent<{}, {}> = createGlobalStyle`
@@ -50,12 +50,11 @@ export const GlobalStyles: GlobalStyleComponent<{}, {}> = createGlobalStyle`
         position: relative;
         background-image: url(${background});
         background-position: 0% var(--next-position);
-        background-repeat: repeat-y;
-        background-size: contain;
+        background-repeat: repeat;
+        background-size: cover contain;
         color: white;
         font-family: arcadeFont;
-        overflow-x: hidden;
-        overflow-y: scroll;
+        overflow: hidden;
         transition: background-position 60s linear;
         z-index: 1;
     }
@@ -109,7 +108,7 @@ export const theme: Theme = {
   `,
 
   opaqueOnPause: (gameState) =>
-    gameState.game !== `PAUSED`
+    gameState.current !== CurrentState.Paused
       ? css`
           color: white;
         `

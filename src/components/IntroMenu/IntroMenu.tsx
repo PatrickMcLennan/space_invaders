@@ -1,13 +1,14 @@
 import React, { MutableRefObject, useEffect, useRef } from "react";
 import { Section, H1 } from "./IntroMenu.style";
 import { useFocus } from "../../hooks/useFocus";
-import { useGame } from "../../hooks/useContext";
+import { useGameState } from "../../hooks/useContext";
 import { AnimatePresence } from "framer-motion";
 import { menuMountAnimation } from "../../styles/animations";
 import { Nav, NavButton } from "../../styles/MenuNav";
+import { CurrentState } from "../../types/GameState.type";
 
-export function IntroMenu() {
-  const { startGame } = useGame();
+export function IntroMenu(): JSX.Element {
+  const { setGameState } = useGameState();
 
   const playButton: MutableRefObject<HTMLButtonElement> = useRef(null);
   useEffect(() => useFocus(playButton), []);
@@ -19,7 +20,16 @@ export function IntroMenu() {
         <Nav>
           <ul>
             <li>
-              <NavButton onClick={startGame} ref={playButton}>
+              <NavButton
+                onClick={() =>
+                  setGameState((prevState) => ({
+                    ...prevState,
+                    current: CurrentState.Playing,
+                    currentMenu: null,
+                  }))
+                }
+                ref={playButton}
+              >
                 Play
               </NavButton>
             </li>

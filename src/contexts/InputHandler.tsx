@@ -11,27 +11,22 @@ export function InputContextProvider({ children }) {
     lastKeyPresses: [],
   });
 
-  const keyIsDown: (e: KeyboardEvent) => void = (e) => {
-    e.stopImmediatePropagation();
-    const key: AcceptedKey | false = keyReducer(e);
-    if (!key) return;
+  const keyIsDown: (e?: KeyboardEvent) => void = (e) => {
+    const key: AcceptedKey | AcceptedKey[] = keyReducer(e) ?? inputState.currentKeyPresses;
+    if (!key || !inputState.currentKeyPresses.length) return;
     else
       return setInputState((prevState) => ({
         keyIsDown: true,
-        currentKeyPresses: [
-          key,
-          ...prevState.currentKeyPresses.filter(
-            (currentKey, i, allKeys) => allKeys.indexOf(currentKey) === i && currentKey !== key
-          ),
-        ],
+        currentKeyPresses: prevState.currentKeyPresses.filter((prevKey) => !key.includes(prevKey) || prevKey !== key),
         lastKeyPresses: prevState.lastKeyPresses,
       }));
   };
 
+  console.log(inputState.currentKeyPresses);
+
   const keyIsUp: (e: KeyboardEvent) => void = (e) => {
-    e.stopImmediatePropagation();
     const key: AcceptedKey | false = keyReducer(e);
-    console.log(inputState.currentKeyPresses.filter((currentKey) => currentKey !== key));
+    console.log(`keyup`);
     if (!key) return;
     else
       return setInputState((prevState) => ({
@@ -44,6 +39,10 @@ export function InputContextProvider({ children }) {
   useEffect(() => {
     window.addEventListener(`keydown`, keyIsDown);
     window.addEventListener(`keyup`, keyIsUp);
+    return () => {
+      window.removeEventListener(`keydown`, keyIsDown);
+      window.removeEventListener(`keyup`, keyIsUp);
+    };
   }, []);
 
   return <InputContext.Provider value={{ inputState, setInputState }}>{children}</InputContext.Provider>;

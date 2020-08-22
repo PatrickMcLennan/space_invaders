@@ -1,4 +1,6 @@
 const path = require("path");
+const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
+const WorkboxPlugin = require("workbox-webpack-plugin");
 
 module.exports = {
   entry: [`./src/index.ts`],
@@ -17,18 +19,22 @@ module.exports = {
       },
       {
         test: /\.(png|ttf)$/,
-        exclude: [/(node_modules)/, /\.wasm$/],
+        exclude: [/(node_modules)/, /\wasm$/],
         use: `file-loader`,
-      },
-      {
-        test: /\.wasm$/,
-        include: path.resolve(__dirname, `src`),
-        use: {
-          loader: `wasm-loader`,
-        },
       },
     ],
   },
+  plugins: [
+    new WasmPackPlugin({
+      crateDirectory: path.resolve(__dirname, `src/wasm`),
+      TextDecoder: ["text-encoding", "TextDecoder"],
+      TextEncoder: ["text-encoding", "TextEncoder"],
+    }),
+    new WorkboxPlugin.GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
+    }),
+  ],
   resolve: {
     extensions: [`.js`, `.ts`, `.tsx`],
   },

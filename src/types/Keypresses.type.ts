@@ -7,7 +7,7 @@ export enum AcceptedKey {
   Pause = `PAUSE`,
 }
 
-export function keyReducer({ key }: KeyboardEvent): AcceptedKey | false {
+export function keyReducer({ key }: KeyboardEvent): AcceptedKey {
   switch (key.toLowerCase()) {
     case `up`:
     case `arrowup`:
@@ -30,6 +30,6 @@ export function keyReducer({ key }: KeyboardEvent): AcceptedKey | false {
     case `escape`:
       return AcceptedKey.Pause;
     default:
-      return false;
+      return null;
   }
 }

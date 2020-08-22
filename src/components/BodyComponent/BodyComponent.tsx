@@ -1,17 +1,17 @@
 import React from "react";
-import { useGame } from "../../hooks/useContext";
+import { useGameState } from "../../hooks/useContext";
 import { IntroMenu } from "../IntroMenu/IntroMenu";
 import { Playboard } from "../Playboard/Playboard";
-import { Game } from "../../types/GameState.type";
+import { CurrentState } from "../../types/GameState.type";
 
-export function BodyComponent() {
-  const { gameState } = useGame();
+export function BodyComponent(): JSX.Element {
+  const { gameState } = useGameState();
 
-  const componentReducer = () => {
-    switch (gameState.game) {
-      case Game.Intro:
+  const componentReducer: () => JSX.Element = () => {
+    switch (gameState.current) {
+      case CurrentState.Intro:
         return <IntroMenu />;
-      case Game.Playing:
+      case CurrentState.Playing:
         return <Playboard />;
     }
   };

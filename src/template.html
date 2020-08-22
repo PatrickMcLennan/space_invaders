@@ -1,11 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="A take on the classic Space Invaders.  Made with TypeScript, React and Rust." />
+    <meta name="author" content="patrick.a.mclennan@gmail.com" />
+    <meta name="keywords" content="Space Invaders, React, TypeScript, JavaScript, React, WASM, Rust" />
+    <meta name="theme-color" content="#000" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="./manifest.json" />
     <title>Test Game</title>
-</head>
-<body>
+  </head>
+  <body>
     <div id="ROOT"></div>
-</body>
+    <noscript>
+      This is a React/Wasm application, and you must enable JavaScript in order to use this application.
+    </noscript>
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("worker.js")
+            .then(
+              (registration) => console.log("Worker registration successful", registration.scope),
+              (err) => console.log("Worker registration failed", err)
+            )
+            .catch(function (err) {
+              console.log(err);
+            });
+        });
+      } else console.log("Service Worker is not supported by browser.");
+    </script>
+  </body>
 </html>
