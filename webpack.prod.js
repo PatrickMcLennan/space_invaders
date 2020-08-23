@@ -17,6 +17,11 @@ module.exports = merge(common, {
     new ScriptExtWebpackPlugin({
       defaultAttribute: `defer`,
     }),
-    new CopyWebpackPlugin({ patterns: [{ from: path.resolve(__dirname, `src/manifest.json`) }] }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: path.resolve(__dirname, `src/manifest.json`) },
+        { from: path.resolve(__dirname, `src/assets/favicon.ico`) },
+      ],
+    }),
   ],
 });

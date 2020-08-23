@@ -3,14 +3,9 @@
   "name": "Play Space Invaders with React and Rust",
   "icons": [
     {
-      "src": "../images/favicon.gif",
+      "src": "./favicon.ico",
       "sizes": "64x64",
       "type": "image/gif"
-    },
-    {
-      "src": "../images/football-logo.png",
-      "type": "image/png",
-      "sizes": "256x256"
     }
   ],
   "start_url": "../",

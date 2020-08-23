@@ -8,13 +8,81 @@
     <meta name="theme-color" content="#000" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="manifest" href="./manifest.json" />
-    <title>Test Game</title>
+    <link href="./favicon.ico" rel="icon" type="image/x-icon" />
+    <title>Space Invaders</title>
   </head>
   <body>
-    <div id="ROOT"></div>
-    <noscript>
-      This is a React/Wasm application, and you must enable JavaScript in order to use this application.
-    </noscript>
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+      }
+      @keyframes ellipses {
+        from {
+          opacity: 1;
+        }
+
+        to {
+          opacity: 0;
+        }
+      }
+      #ROOT {
+        background-color: black;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+      }
+
+      .noscript,
+      .loader {
+        color: white;
+        font-size: 20px;
+        line-height: 30px;
+        text-align: center;
+        max-width: 750px;
+      }
+
+      .loader {
+        font-size: 30px;
+        text-transform: uppercase;
+      }
+
+      .loader:nth-child(2) {
+        animation-delay: 0.4s;
+      }
+      .loader:nth-child(3) {
+        animation-delay: 0.8s;
+      }
+
+      .ellipses {
+        animation-name: ellipses;
+        animation-duration: 1s;
+        animation-direction: alternate;
+        animation-iteration-count: infinite;
+      }
+    </style>
+
+    <div id="ROOT">
+      <noscript class="noscript">
+        <span>
+          It seems like you have JavaScript disabled on your browser. This application was built with JavaScript and it
+          must be enabled in order to run.
+        </span>
+
+        <br />
+        <br />
+
+        <span>
+          Please enable JavaScript within your browsers settings, or return to this URL on a newer version of Chrome,
+          FireFox, Safari or Edge.
+        </span>
+      </noscript>
+      <div class="loader">
+        Loading <span class="ellipses">.</span> <span class="ellipses">.</span> <span class="ellipses">.</span>
+      </div>
+    </div>
 
     <script>
       if ("serviceWorker" in navigator) {
