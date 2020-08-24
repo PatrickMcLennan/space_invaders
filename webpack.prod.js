@@ -8,6 +8,33 @@ const path = require("path");
 
 module.exports = merge(common, {
   mode: `production`,
+  optimization: {
+    namedChunks: true,
+    moduleIds: `hashed`,
+    runtimeChunk: `single`,
+    splitChunks: {
+      chunks: `all`,
+      maxInitialRequests: Infinity,
+      minSize: 0,
+      cacheGroups: {
+        styledComponents: {
+          test: /node_modules\/framer-motion\//,
+          name: `framerMotion`,
+          chunks: `all`,
+        },
+        styledComponents: {
+          test: /node_modules\/styled-components\//,
+          name: `styledComponents`,
+          chunks: `all`,
+        },
+        react: {
+          test: /node_modules\/react-((\-dom))\//,
+          name: `react`,
+          chunks: `all`,
+        },
+      },
+    },
+  },
   plugins: [
     new CleanWebpackPlugin({}),
     new HtmlWebpackPlugin({

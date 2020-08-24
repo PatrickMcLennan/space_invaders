@@ -12,22 +12,7 @@
     <title>Space Invaders</title>
   </head>
   <body>
-    <style>
-      *,
-      *::before,
-      *::after {
-        margin: 0;
-        padding: 0;
-      }
-      @keyframes ellipses {
-        from {
-          opacity: 1;
-        }
-
-        to {
-          opacity: 0;
-        }
-      }
+    <style class="loader-styles">
       #ROOT {
         background-color: black;
         height: 100vh;
@@ -35,37 +20,18 @@
         overflow: hidden;
       }
 
-      .noscript,
-      .loader {
+      noscript {
+        display: block;
         color: white;
         font-size: 20px;
         line-height: 30px;
         text-align: center;
         max-width: 750px;
       }
-
-      .loader {
-        font-size: 30px;
-        text-transform: uppercase;
-      }
-
-      .loader:nth-child(2) {
-        animation-delay: 0.4s;
-      }
-      .loader:nth-child(3) {
-        animation-delay: 0.8s;
-      }
-
-      .ellipses {
-        animation-name: ellipses;
-        animation-duration: 1s;
-        animation-direction: alternate;
-        animation-iteration-count: infinite;
-      }
     </style>
 
     <div id="ROOT">
-      <noscript class="noscript">
+      <noscript>
         <span>
           It seems like you have JavaScript disabled on your browser. This application was built with JavaScript and it
           must be enabled in order to run.
@@ -79,12 +45,9 @@
           FireFox, Safari or Edge.
         </span>
       </noscript>
-      <div class="loader">
-        Loading <span class="ellipses">.</span> <span class="ellipses">.</span> <span class="ellipses">.</span>
-      </div>
     </div>
 
-    <script>
+    <!-- <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker
@@ -98,6 +61,6 @@
             });
         });
       } else console.log("Service Worker is not supported by browser.");
-    </script>
+    </script> -->
   </body>
 </html>

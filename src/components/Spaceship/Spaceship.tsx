@@ -1,70 +1,70 @@
-import React, { useRef, RefObject } from "react";
-import styled from "styled-components";
+import React, { useRef, RefObject, useEffect } from "react";
 
-import { motion, useMotionValue } from "framer-motion";
-import { useInput } from "../../hooks/useContext";
+import { useMotionValue } from "framer-motion";
+import { useInput, useGameState } from "../../hooks/useContext";
 import { AcceptedKey } from "../../types/Keypresses.type";
 import { ElementCoords } from "../../types/ElementCoords";
+import { SVG } from "./Spaceship.style";
+import { CurrentState } from "../../types/GameState.type";
 
 const PIXEL_MOVEMENT: number = 20;
 
-const SVG = styled(motion.svg)`
-  ${({ theme: { svgSize } }) => svgSize};
-  margin: auto auto 50px auto;
-  fill: white;
-  backface-visibility: visible;
-  perspective: 500px;
-  transition: all 0.2s;
-`;
-
 export function Spaceship() {
-  const {
-    inputState: { currentKeyPresses },
-  } = useInput();
+  const { inputState } = useInput();
+  const { gameState } = useGameState();
   const [x, y]: [ElementCoords["x"], ElementCoords["y"]] = [useMotionValue(0), useMotionValue(0)];
   const spaceship: RefObject<SVGSVGElement> = useRef(null);
 
-  const keyIsPressed: (key: AcceptedKey) => boolean = (key) => currentKeyPresses.includes(key);
+  const currrentDirections: (key: AcceptedKey, currentInput: AcceptedKey[]) => boolean = (key, currentInput) => {
+    return currentInput.includes(key);
+  };
 
   const newCoords = (newX, newY) => ({
     x: x.get() + newX,
     y: y.get() + newY,
   });
 
-  const getNewPosition = () => {
-    if (keyIsPressed(AcceptedKey.Up) && keyIsPressed(AcceptedKey.Right))
+  const positionReducer = (currentInput) => {
+    if (currrentDirections(AcceptedKey.Up, currentInput) && currrentDirections(AcceptedKey.Right, currentInput))
       return newCoords(PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
-    else if (keyIsPressed(AcceptedKey.Up) && keyIsPressed(AcceptedKey.Left))
+    else if (currrentDirections(AcceptedKey.Up, currentInput) && currrentDirections(AcceptedKey.Left, currentInput))
       return newCoords(-PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
-    else if (keyIsPressed(AcceptedKey.Down) && keyIsPressed(AcceptedKey.Right))
+    else if (currrentDirections(AcceptedKey.Down, currentInput) && currrentDirections(AcceptedKey.Right, currentInput))
       return newCoords(PIXEL_MOVEMENT, PIXEL_MOVEMENT);
-    else if (keyIsPressed(AcceptedKey.Down) && keyIsPressed(AcceptedKey.Left))
+    else if (currrentDirections(AcceptedKey.Down, currentInput) && currrentDirections(AcceptedKey.Left, currentInput))
       return newCoords(-PIXEL_MOVEMENT, PIXEL_MOVEMENT);
-    else if (keyIsPressed(AcceptedKey.Up)) return newCoords(0, -PIXEL_MOVEMENT);
-    else if (keyIsPressed(AcceptedKey.Right)) return newCoords(PIXEL_MOVEMENT, 0);
-    else if (keyIsPressed(AcceptedKey.Down)) return newCoords(0, PIXEL_MOVEMENT);
-    else if (keyIsPressed(AcceptedKey.Left)) return newCoords(-PIXEL_MOVEMENT, 0);
+    else if (currrentDirections(AcceptedKey.Up, currentInput)) return newCoords(0, -PIXEL_MOVEMENT);
+    else if (currrentDirections(AcceptedKey.Right, currentInput)) return newCoords(PIXEL_MOVEMENT, 0);
+    else if (currrentDirections(AcceptedKey.Down, currentInput)) return newCoords(0, PIXEL_MOVEMENT);
+    else if (currrentDirections(AcceptedKey.Left, currentInput)) return newCoords(-PIXEL_MOVEMENT, 0);
     else return newCoords(0, 0);
   };
 
-  if (spaceship.current && currentKeyPresses.length) {
+  function* moveShip(currentInput) {
+    if (!currentInput.length) return;
     const { left, bottom, right, top } = spaceship.current.getBoundingClientRect();
-    const newPosition = getNewPosition();
+    const newPosition = positionReducer(currentInput);
     if (
-      (top < 0 && currentKeyPresses.includes(AcceptedKey.Up)) ||
-      (bottom > window.innerHeight && currentKeyPresses.includes(AcceptedKey.Down))
+      (top < 0 && currrentDirections(AcceptedKey.Up, currentInput)) ||
+      (bottom > window.innerHeight && currrentDirections(AcceptedKey.Down, currentInput))
     )
       x.set(newPosition.x);
     else if (
-      (left < 0 && currentKeyPresses.includes(AcceptedKey.Left)) ||
-      (right > window.innerWidth && currentKeyPresses.includes(AcceptedKey.Right))
+      (left < 0 && currrentDirections(AcceptedKey.Left, currentInput)) ||
+      (right > window.innerWidth && currrentDirections(AcceptedKey.Right, currentInput))
     )
       y.set(newPosition.y);
     else {
       x.set(newPosition.x);
       y.set(newPosition.y);
     }
+    yield setTimeout(() => moveShip(inputState).next(), 200);
   }
+
+  useEffect(() => {
+    console.log(inputState.length);
+    !!inputState.length ? moveShip(inputState).next() : moveShip(inputState).return();
+  }, [inputState]);
 
   return (
     <>

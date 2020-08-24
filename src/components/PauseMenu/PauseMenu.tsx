@@ -1,25 +1,34 @@
 import React, { useEffect, MutableRefObject, useRef } from "react";
 import { Nav, NavButton } from "../../styles/MenuNav";
-import { useFocus } from "../../hooks/useFocus";
 import { AnimatePresence } from "framer-motion";
 import { Section } from "./PauseMenu.style";
 import { menuMountAnimation } from "../../styles/animations";
-import { useGame } from "../../hooks/useContext";
+import { useGameState, useInput } from "../../hooks/useContext";
 import { CurrentState } from "../../types/GameState.type";
+import { useTrapFocus } from "../../hooks/useTrapFocus";
 
-export function PauseMenu() {
-  const { setGameState } = useGame();
-  const continueButton: MutableRefObject<HTMLButtonElement> = useRef(null);
-  useEffect(() => useFocus(continueButton), []);
+function PauseMenu() {
+  const { setGameState } = useGameState();
+  const { inputState } = useInput();
+  const section: MutableRefObject<HTMLElement> = useRef(null);
+
+  useEffect(() => useTrapFocus(section.current, inputState), [inputState]);
+
   return (
     <AnimatePresence>
-      <Section aria-modal="true" animate="animate" initial="initial" exit="exit" variants={menuMountAnimation}>
+      <Section
+        aria-modal="true"
+        animate="animate"
+        initial="initial"
+        exit="exit"
+        ref={section}
+        variants={menuMountAnimation}
+      >
         <h6>Pause</h6>
 
         <Nav>
           <li>
             <NavButton
-              ref={continueButton}
               onClick={() =>
                 setGameState((prevState) => ({
                   ...prevState,
@@ -38,3 +47,5 @@ export function PauseMenu() {
     </AnimatePresence>
   );
 }
+
+export default PauseMenu;

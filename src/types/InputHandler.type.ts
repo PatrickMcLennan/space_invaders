@@ -1,11 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { AcceptedKey } from "./Keypresses.type";
 
-export type InputState = {
-  keyIsDown: boolean;
-  currentKeyPresses: AcceptedKey[];
-  lastKeyPresses: AcceptedKey[];
-};
+export type InputState = AcceptedKey[];
 
 export type SetInputState = Dispatch<SetStateAction<InputState>>;
 

@@ -4,10 +4,10 @@ import { render } from "react-dom";
 import App from "./App";
 
 const ROOT: HTMLDivElement = document.querySelector(`#ROOT`);
-const LOADER: HTMLDivElement = document.querySelector(`.loader`);
+const loaderStyles: HTMLStyleElement = document.querySelector(`.loader-styles`);
 
 render(createElement(App), ROOT, () => {
-  LOADER.remove();
+  loaderStyles.remove();
   if ("serviceWorker" in navigator)
     window.addEventListener("load", () => {
       navigator.serviceWorker

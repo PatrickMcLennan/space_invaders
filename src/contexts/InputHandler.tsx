@@ -1,39 +1,49 @@
 import React, { createContext, Context, useEffect, useState, Consumer } from "react";
 import { InputStateProvider, InputState, SetInputState } from "../types/InputHandler.type";
-import { AcceptedKey, keyReducer } from "../types/Keypresses.type";
+import { AcceptedKey } from "../types/Keypresses.type";
+
+function keyReducer({ key }: KeyboardEvent): AcceptedKey {
+  switch (key.toLowerCase()) {
+    case `arrowup`:
+    case `up`:
+    case `w`:
+      return AcceptedKey.Up;
+    case `arrowdown`:
+    case `down`:
+    case `s`:
+      return AcceptedKey.Down;
+    case `arrowright`:
+    case `right`:
+    case `d`:
+      return AcceptedKey.Right;
+    case `arrowleft`:
+    case `left`:
+    case `a`:
+      return AcceptedKey.Left;
+    case ` `:
+      return AcceptedKey.Shoot;
+    case `escape`:
+      return AcceptedKey.Pause;
+    default:
+      return null;
+  }
+}
 
 export const InputContext: Context<InputStateProvider> = createContext({} as InputStateProvider);
 
 export function InputContextProvider({ children }) {
-  const [inputState, setInputState]: [InputState, SetInputState] = useState({
-    keyIsDown: false,
-    currentKeyPresses: [],
-    lastKeyPresses: [],
-  });
+  const [inputState, setInputState]: [InputState, SetInputState] = useState([]);
 
-  const keyIsDown: (e?: KeyboardEvent) => void = (e) => {
-    const key: AcceptedKey | AcceptedKey[] = keyReducer(e) ?? inputState.currentKeyPresses;
-    if (!key || !inputState.currentKeyPresses.length) return;
-    else
-      return setInputState((prevState) => ({
-        keyIsDown: true,
-        currentKeyPresses: prevState.currentKeyPresses.filter((prevKey) => !key.includes(prevKey) || prevKey !== key),
-        lastKeyPresses: prevState.lastKeyPresses,
-      }));
+  const keyIsDown: (e: KeyboardEvent) => void = (e) => {
+    const key: AcceptedKey = keyReducer(e);
+    if (e.repeat || (!key && !inputState.length)) return;
+    else return setInputState((prevState) => [...new Set([key, ...prevState])]);
   };
 
-  console.log(inputState.currentKeyPresses);
-
   const keyIsUp: (e: KeyboardEvent) => void = (e) => {
-    const key: AcceptedKey | false = keyReducer(e);
-    console.log(`keyup`);
+    const key: AcceptedKey = keyReducer(e);
     if (!key) return;
-    else
-      return setInputState((prevState) => ({
-        keyIsDown: !prevState.currentKeyPresses.filter((currentKey) => currentKey === key).length,
-        currentKeyPresses: prevState.currentKeyPresses.filter((currentKey) => currentKey !== key),
-        lastKeyPresses: [key, ...prevState.lastKeyPresses.slice(0, 3)],
-      }));
+    else return setInputState((prevState) => prevState.filter((currentKey) => currentKey !== key));
   };
 
   useEffect(() => {

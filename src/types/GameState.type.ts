@@ -11,7 +11,8 @@ export enum CurrentState {
 export enum Menu {
   Pause = `PAUSE`,
   Start = `START`,
-  Intro = `INTRO`,
+  HighScores = `HIGH_SCORES`,
+  None = `NONE`,
 }
 
 export type GameState = {

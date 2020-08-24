@@ -13,11 +13,11 @@ function App(): JSX.Element {
 
   useBackgroundScroll();
 
-  // useEffect(() => {
-  //   import(`wasm`)
-  //     .then((wasm) => setWasm(wasm))
-  //     .catch(console.error);
-  // }, []);
+  //   useEffect(() => {
+  //     import(`wasm`)
+  //       .then((wasm) => setWasm(wasm))
+  //       .catch(console.error);
+  //   }, []);
 
   return (
     <InputContextProvider>

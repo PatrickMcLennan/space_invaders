@@ -1,8 +1,11 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { useGameState } from "../../hooks/useContext";
 import { IntroMenu } from "../IntroMenu/IntroMenu";
-import { Playboard } from "../Playboard/Playboard";
-import { CurrentState } from "../../types/GameState.type";
+import { CurrentState, Menu } from "../../types/GameState.type";
+
+const PauseMenu = React.lazy(() => import(`../PauseMenu/PauseMenu`));
+const ScoresMenu = React.lazy(() => import(`../ScoresMenu/ScoresMenu`));
+const Playboard = React.lazy(() => import(`../Playboard/Playboard`));
 
 export function BodyComponent(): JSX.Element {
   const { gameState } = useGameState();
@@ -12,9 +15,21 @@ export function BodyComponent(): JSX.Element {
       case CurrentState.Intro:
         return <IntroMenu />;
       case CurrentState.Playing:
-        return <Playboard />;
+      case CurrentState.Paused:
+      default:
+        return (
+          <>
+            {gameState.currentMenu === Menu.Pause && <PauseMenu />}
+            {gameState.currentMenu === Menu.HighScores && <ScoresMenu />}
+            <Playboard />
+          </>
+        );
     }
   };
 
-  return <main>{componentReducer()}</main>;
+  return (
+    <main>
+      <Suspense fallback={<div>hello</div>}>{componentReducer()}</Suspense>
+    </main>
+  );
 }
