@@ -15,8 +15,8 @@ export function Spaceship() {
   const [x, y]: [ElementCoords["x"], ElementCoords["y"]] = [useMotionValue(0), useMotionValue(0)];
   const spaceship: RefObject<SVGSVGElement> = useRef(null);
 
-  const currrentDirections: (key: AcceptedKey, currentInput: AcceptedKey[]) => boolean = (key, currentInput) => {
-    return currentInput.includes(key);
+  const currrentDirections: (key: AcceptedKey) => boolean = (key) => {
+    return inputState.includes(key);
   };
 
   const newCoords = (newX, newY) => ({
@@ -24,46 +24,48 @@ export function Spaceship() {
     y: y.get() + newY,
   });
 
-  const positionReducer = (currentInput) => {
-    if (currrentDirections(AcceptedKey.Up, currentInput) && currrentDirections(AcceptedKey.Right, currentInput))
+  const positionReducer = () => {
+    if (currrentDirections(AcceptedKey.Up) && currrentDirections(AcceptedKey.Right))
       return newCoords(PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
-    else if (currrentDirections(AcceptedKey.Up, currentInput) && currrentDirections(AcceptedKey.Left, currentInput))
+    else if (currrentDirections(AcceptedKey.Up) && currrentDirections(AcceptedKey.Left))
       return newCoords(-PIXEL_MOVEMENT, -PIXEL_MOVEMENT);
-    else if (currrentDirections(AcceptedKey.Down, currentInput) && currrentDirections(AcceptedKey.Right, currentInput))
+    else if (currrentDirections(AcceptedKey.Down) && currrentDirections(AcceptedKey.Right))
       return newCoords(PIXEL_MOVEMENT, PIXEL_MOVEMENT);
-    else if (currrentDirections(AcceptedKey.Down, currentInput) && currrentDirections(AcceptedKey.Left, currentInput))
+    else if (currrentDirections(AcceptedKey.Down) && currrentDirections(AcceptedKey.Left))
       return newCoords(-PIXEL_MOVEMENT, PIXEL_MOVEMENT);
-    else if (currrentDirections(AcceptedKey.Up, currentInput)) return newCoords(0, -PIXEL_MOVEMENT);
-    else if (currrentDirections(AcceptedKey.Right, currentInput)) return newCoords(PIXEL_MOVEMENT, 0);
-    else if (currrentDirections(AcceptedKey.Down, currentInput)) return newCoords(0, PIXEL_MOVEMENT);
-    else if (currrentDirections(AcceptedKey.Left, currentInput)) return newCoords(-PIXEL_MOVEMENT, 0);
+    else if (currrentDirections(AcceptedKey.Up)) return newCoords(0, -PIXEL_MOVEMENT);
+    else if (currrentDirections(AcceptedKey.Right)) return newCoords(PIXEL_MOVEMENT, 0);
+    else if (currrentDirections(AcceptedKey.Down)) return newCoords(0, PIXEL_MOVEMENT);
+    else if (currrentDirections(AcceptedKey.Left)) return newCoords(-PIXEL_MOVEMENT, 0);
     else return newCoords(0, 0);
   };
 
-  function* moveShip(currentInput) {
-    if (!currentInput.length) return;
+  function moveShip(currentInput) {
+    console.log(currentInput);
+    if (!currentInput.length) return setTimeout(() => moveShip([]), 250);
     const { left, bottom, right, top } = spaceship.current.getBoundingClientRect();
-    const newPosition = positionReducer(currentInput);
+    const newPosition = positionReducer();
     if (
-      (top < 0 && currrentDirections(AcceptedKey.Up, currentInput)) ||
-      (bottom > window.innerHeight && currrentDirections(AcceptedKey.Down, currentInput))
+      (top < 0 && currrentDirections(AcceptedKey.Up)) ||
+      (bottom > window.innerHeight && currrentDirections(AcceptedKey.Down))
     )
       x.set(newPosition.x);
     else if (
-      (left < 0 && currrentDirections(AcceptedKey.Left, currentInput)) ||
-      (right > window.innerWidth && currrentDirections(AcceptedKey.Right, currentInput))
+      (left < 0 && currrentDirections(AcceptedKey.Left)) ||
+      (right > window.innerWidth && currrentDirections(AcceptedKey.Right))
     )
       y.set(newPosition.y);
     else {
       x.set(newPosition.x);
       y.set(newPosition.y);
     }
-    yield setTimeout(() => moveShip(inputState).next(), 200);
+    return setTimeout(() => moveShip(currentInput), 250);
   }
 
   useEffect(() => {
-    console.log(inputState.length);
-    !!inputState.length ? moveShip(inputState).next() : moveShip(inputState).return();
+    if (inputState.length) moveShip(inputState);
+
+    return () => moveShip([]);
   }, [inputState]);
 
   return (
