@@ -1,7 +1,7 @@
 import React, { useRef, RefObject, useEffect } from "react";
 
 import { useMotionValue } from "framer-motion";
-import { useInput, useGameState } from "../../hooks/useContext";
+import { useInput, useGameState, useWasm } from "../../hooks/useContext";
 import { AcceptedKey } from "../../types/Keypresses.type";
 import { ElementCoords } from "../../types/ElementCoords";
 import { SVG } from "./Spaceship.style";
@@ -12,6 +12,7 @@ const PIXEL_MOVEMENT: number = 20;
 export function Spaceship() {
   const { inputState } = useInput();
   const { gameState } = useGameState();
+  const { wasm } = useWasm();
   const [x, y]: [ElementCoords["x"], ElementCoords["y"]] = [useMotionValue(0), useMotionValue(0)];
   const spaceship: RefObject<SVGSVGElement> = useRef(null);
 
@@ -41,7 +42,6 @@ export function Spaceship() {
   };
 
   function moveShip(currentInput) {
-    console.log(currentInput);
     if (!currentInput.length) return setTimeout(() => moveShip([]), 250);
     const { left, bottom, right, top } = spaceship.current.getBoundingClientRect();
     const newPosition = positionReducer();
@@ -59,13 +59,10 @@ export function Spaceship() {
       x.set(newPosition.x);
       y.set(newPosition.y);
     }
-    return setTimeout(() => moveShip(currentInput), 250);
   }
 
   useEffect(() => {
-    if (inputState.length) moveShip(inputState);
-
-    return () => moveShip([]);
+    if (inputState.includes(AcceptedKey.Shoot)) return wasm.shoot(x.get(), y.get());
   }, [inputState]);
 
   return (

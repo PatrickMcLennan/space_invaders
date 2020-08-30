@@ -7,29 +7,23 @@ import { Footer } from "./components/Footer/Footer";
 import { InputContextProvider } from "./contexts/InputHandler";
 import { useBackgroundScroll } from "./hooks/useBackgroundScroll";
 import { BodyComponent } from "./components/BodyComponent/BodyComponent";
+import { WasmStateProvider } from "./contexts/WasmContext";
 
 function App(): JSX.Element {
-  const [wasm, setWasm]: [any, any] = useState();
-
   useBackgroundScroll();
-
-  //   useEffect(() => {
-  //     import(`wasm`)
-  //       .then((wasm) => setWasm(wasm))
-  //       .catch(console.error);
-  //   }, []);
-
   return (
-    <InputContextProvider>
-      <GameStateProvider>
-        <ThemeProvider theme={theme}>
-          <GlobalStyles />
-          <Header />
-          <BodyComponent />
-          <Footer />
-        </ThemeProvider>
-      </GameStateProvider>
-    </InputContextProvider>
+    <WasmStateProvider>
+      <InputContextProvider>
+        <GameStateProvider>
+          <ThemeProvider theme={theme}>
+            <GlobalStyles />
+            <Header />
+            <BodyComponent />
+            <Footer />
+          </ThemeProvider>
+        </GameStateProvider>
+      </InputContextProvider>
+    </WasmStateProvider>
   );
 }
 

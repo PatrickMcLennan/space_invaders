@@ -73,6 +73,22 @@ export const GlobalStyles: GlobalStyleComponent<{}, {}> = createGlobalStyle`
         font-family: inherit;
         text-decoration: none;
     }
+
+    #laser {
+        height: 40px;
+        width: 30px;
+        position: absolute;
+        fill: white;
+        stroke-width: 3;
+        stroke: white;
+        border:1px solid red;
+
+        rect {
+            fill: white;
+            stroke-width: 3;
+            stroke: white;
+        }
+    }
 `;
 
 // Theme

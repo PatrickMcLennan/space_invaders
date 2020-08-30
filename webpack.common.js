@@ -2,6 +2,7 @@ const path = require("path");
 const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
 const DotEnv = require("dotenv-webpack");
+const webpack = require("webpack");
 
 module.exports = {
   entry: [`./src/index.ts`],
@@ -29,6 +30,8 @@ module.exports = {
     new DotEnv(),
     new WasmPackPlugin({
       crateDirectory: path.resolve(__dirname, `src/wasm`),
+    }),
+    new webpack.ProvidePlugin({
       TextDecoder: ["text-encoding", "TextDecoder"],
       TextEncoder: ["text-encoding", "TextEncoder"],
     }),
@@ -38,6 +41,6 @@ module.exports = {
     }),
   ],
   resolve: {
-    extensions: [`.js`, `.ts`, `.tsx`],
+    extensions: [`.js`, `.ts`, `.tsx`, `.wasm`],
   },
 };

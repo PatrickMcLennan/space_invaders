@@ -1,26 +1,21 @@
+extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
+mod game;
+mod laser;
+use game::Game;
+
+#[wasm_bindgen]
+extern "C" {
+    fn alert(s: &str);
 }
 
-#[wasm_bindgen(start)]
-pub fn run() -> Result<(), JsValue> {
-    // Use `web_sys`'s global `window` function to get a handle on the global
-    // window object.
-    let window = web_sys::window().expect("no global `window` exists");
-    let document = window.document().expect("should have a document on window");
-    let body = document.body().expect("document should have a body");
+#[wasm_bindgen]
+pub fn helloworld(name: &str) {
+    alert(&format!("Hello World : {}", name))
+}
 
-    // Manufacture the element we're gonna append
-    let val = document.create_element("p")?;
-    val.set_inner_html("Hello from Rust!");
-
-    body.append_child(&val)?;
-
-    Ok(())
+#[wasm_bindgen]
+pub fn start_game() -> Game {
+    Game::new()
 }

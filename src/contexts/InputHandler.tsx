@@ -36,7 +36,7 @@ export function InputContextProvider({ children }) {
 
   const keyIsDown: (e: KeyboardEvent) => void = (e) => {
     const key: AcceptedKey = keyReducer(e);
-    if (e.repeat || (!key && !inputState.length)) return;
+    if (e.repeat || !key) return;
     else return setInputState((prevState) => [...new Set([key, ...prevState])]);
   };
 
