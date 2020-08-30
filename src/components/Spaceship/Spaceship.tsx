@@ -63,6 +63,7 @@ export function Spaceship() {
 
   useEffect(() => {
     if (inputState.includes(AcceptedKey.Shoot)) return wasm.shoot(x.get(), y.get());
+    moveShip(inputState);
   }, [inputState]);
 
   return (
