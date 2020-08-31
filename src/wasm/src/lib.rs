@@ -1,9 +1,10 @@
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
 
+mod alien;
 mod game;
 mod laser;
-use game::Game;
+mod spaceship;
 
 #[wasm_bindgen]
 extern "C" {
@@ -16,6 +17,6 @@ pub fn helloworld(name: &str) {
 }
 
 #[wasm_bindgen]
-pub fn start_game() -> Game {
-    Game::new()
+pub fn start_game(spaceship: web_sys::HtmlElement) -> game::Game {
+    game::Game::new(spaceship)
 }

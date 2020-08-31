@@ -1,5 +1,9 @@
 import { Game } from "../wasm/pkg/wasm";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, RefObject } from "react";
+
+interface Wasm {
+  start_game: (spaceship: RefObject<SVGSVGElement>) => Game;
+}
 
 export type SetWasmState = Dispatch<SetStateAction<Game>>;
 

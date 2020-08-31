@@ -1,19 +1,16 @@
-import React, { MutableRefObject, useEffect, useRef } from "react";
+import React, { MutableRefObject, useRef } from "react";
 import { Section, H1 } from "./IntroMenu.style";
-import { useGameState, useInput } from "../../hooks/useContext";
+import { useGameState } from "../../hooks/useContext";
 import { AnimatePresence } from "framer-motion";
 import { menuMountAnimation } from "../../styles/animations";
 import { Nav, NavButton } from "../../styles/MenuNav";
 import { CurrentState, Menu } from "../../types/GameState.type";
-import { useTrapFocus } from "../../hooks/useTrapFocus";
 
 export function IntroMenu(): JSX.Element {
   const { setGameState } = useGameState();
-  const { inputState } = useInput();
 
   const playButton: MutableRefObject<HTMLButtonElement> = useRef(null);
   const section: MutableRefObject<HTMLElement> = useRef(null);
-  useEffect(() => useTrapFocus(section.current, inputState), [inputState]);
 
   return (
     <AnimatePresence>

@@ -74,14 +74,21 @@ export const GlobalStyles: GlobalStyleComponent<{}, {}> = createGlobalStyle`
         text-decoration: none;
     }
 
-    #laser {
+    main {
+        position: relative;
+    }
+
+    .laser {
         height: 40px;
         width: 30px;
         position: absolute;
-        fill: white;
-        stroke-width: 3;
-        stroke: white;
         border:1px solid red;
+
+        svg {
+            fill: white;
+            stroke-width: 3;
+            stroke: white;
+        }
 
         rect {
             fill: white;

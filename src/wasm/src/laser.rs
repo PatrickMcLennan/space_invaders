@@ -1,5 +1,4 @@
 extern crate wasm_bindgen;
-use web_sys::Element;
 
 pub struct Laser {
     x: i32,
@@ -12,28 +11,32 @@ impl Laser {
         Laser { x, y, id }
     }
 
-    pub fn get(&self) {
-        println!("{:?}", self.x);
-        println!("{:?}", self.y);
-        println!("{:?}", self.id);
-    }
-
-    pub fn write_to_dom(&self) {
-        let window = web_sys::window().expect("There is no window, run for your life");
-        let document = window.document().expect("There is no document");
-        let body = document.body().expect("there is no body");
-
-        let root = document
+    pub fn write_to_dom(&self, dom: &web_sys::Document) {
+        let playboard = dom
             .get_element_by_id("playboard")
-            .expect("There is no root");
+            .expect("There is no playboard");
 
-        let laser = document.create_element("svg").expect("There is no laser");
-        let rect = document.create_element("rect").expect("There is no rect");
+        let container = dom.create_element("div").expect("There is no container");
+        let laser = dom.create_element("svg").expect("There is no laser");
+        let rect = dom.create_element("rect").expect("There is no rect");
 
-        web_sys::Element::set_attribute(&laser, "x", &self.x.to_string());
-        web_sys::Element::set_attribute(&laser, "y", &self.y.to_string());
-        web_sys::Element::set_id(&laser, "laser");
-        laser.append_child(&rect);
-        root.append_child(&laser);
+        web_sys::Element::set_attribute(&container, "left", &format!("{}px", &self.x.to_string()))
+            .expect("x could not be assigned to laser");
+        web_sys::Element::set_attribute(&container, "top", &format!("{}px", &self.y.to_string()))
+            .expect("y could not be assigned to laser");
+        web_sys::Element::set_attribute(&container, "data-id", &self.id.to_string())
+            .expect("data-id could not be assigned to laser");
+        web_sys::Element::set_attribute(&container, "class", "laser")
+            .expect("data-id could not be assigned to laser");
+        // web_sys::Element::set_id(&container, "laser");
+        laser
+            .append_child(&rect)
+            .expect("rect could not be appended to laser");
+        container
+            .append_child(&laser)
+            .expect("laser could not be appended to container");
+        playboard
+            .append_child(&container)
+            .expect("laser could not be appended to the dom");
     }
 }

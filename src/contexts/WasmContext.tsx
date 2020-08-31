@@ -7,7 +7,7 @@ export function WasmStateProvider({ children }) {
   const [wasm, setWasm] = useState(null);
 
   useEffect(() => {
-    import("../wasm/pkg/wasm").then(({ start_game }) => setWasm(start_game())).catch(console.error);
+    import("../wasm/pkg/wasm").then((wasm) => setWasm(wasm)).catch(console.error);
   }, []);
 
   return <WasmState.Provider value={{ wasm, setWasm }}>{children}</WasmState.Provider>;

@@ -3,16 +3,12 @@ import { Nav, NavButton } from "../../styles/MenuNav";
 import { AnimatePresence } from "framer-motion";
 import { Section } from "./PauseMenu.style";
 import { menuMountAnimation } from "../../styles/animations";
-import { useGameState, useInput } from "../../hooks/useContext";
+import { useGameState } from "../../hooks/useContext";
 import { CurrentState } from "../../types/GameState.type";
-import { useTrapFocus } from "../../hooks/useTrapFocus";
 
 function PauseMenu() {
   const { setGameState } = useGameState();
-  const { inputState } = useInput();
   const section: MutableRefObject<HTMLElement> = useRef(null);
-
-  useEffect(() => useTrapFocus(section.current, inputState), [inputState]);
 
   return (
     <AnimatePresence>

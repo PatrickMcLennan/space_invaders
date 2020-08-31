@@ -1,29 +1,24 @@
 import React, { useEffect, Dispatch, SetStateAction, useState, useRef } from "react";
 import { AnimatePresence } from "framer-motion";
 import { Nav, NavButton } from "../../styles/MenuNav";
-import { useGameState, useInput } from "../../hooks/useContext";
+import { useGameState } from "../../hooks/useContext";
 import { CurrentState, Menu } from "../../types/GameState.type";
-import { useTrapFocus } from "../../hooks/useTrapFocus";
 import { Section } from "./ScoresMenu.style";
 
-type Score = { name: string; score: number };
+type Score = { name: string; score: string };
 
 function ScoresMenu() {
   const [scores, setScores]: [Score[], Dispatch<SetStateAction<Score[]>>] = useState([]);
   const [error, setError]: [boolean, Dispatch<SetStateAction<boolean>>] = useState(false);
   const { gameState, setGameState } = useGameState();
-  const { inputState } = useInput();
   const section = useRef(null);
 
   useEffect(() => {
     if (gameState.currentMenu === Menu.HighScores)
-      Promise.all([
-        fetch(process.env.GET_API)
-          .then((newScores) => newScores.json())
-          .then((newScores) => setScores(newScores))
-          .catch((error) => setError(true)),
-        useTrapFocus(section.current, inputState),
-      ]);
+      fetch(process.env.GET_API)
+        .then((newScores) => newScores.json())
+        .then((newScores) => setScores(newScores))
+        .catch((_error) => setError(true));
   }, [gameState.currentMenu]);
 
   return (

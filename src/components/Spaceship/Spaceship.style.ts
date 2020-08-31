@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 
 export const SVG = styled(motion.svg)`
   ${({ theme: { svgSize } }) => svgSize};
+  display: block;
   margin: auto auto 50px auto;
   fill: white;
   backface-visibility: visible;

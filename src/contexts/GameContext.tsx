@@ -1,7 +1,6 @@
 import React, { Context, createContext, useState, Consumer, useEffect } from "react";
 import { GameState, SetGameState, CurrentState, Menu, GameContextProvider } from "../types/GameState.type";
 
-import { useInput } from "../hooks/useContext";
 import { AcceptedKey } from "../types/Keypresses.type";
 
 export const GameContext: Context<GameContextProvider> = createContext({} as GameContextProvider);
@@ -13,7 +12,6 @@ export function GameStateProvider({ children }) {
     current: CurrentState.Intro,
     currentMenu: null,
   });
-  const { inputState } = useInput();
 
   const isHit = () => {
     const newHealth = gameState.health - 1;
@@ -36,19 +34,12 @@ export function GameStateProvider({ children }) {
     else return;
   };
 
-  const pauseGame = (currentInputs) => {
-    if (currentInputs.includes(AcceptedKey.Pause))
-      return setGameState((prevState) => ({
-        ...prevState,
-        current: prevState.current === CurrentState.Paused ? CurrentState.Playing : CurrentState.Paused,
-        currentMenu: prevState.currentMenu === Menu.Pause ? Menu.None : Menu.Pause,
-      }));
-    else return;
-  };
-
-  useEffect(() => {
-    pauseGame(inputState);
-  }, [inputState]);
+  const pauseGame = () =>
+    setGameState((prevState) => ({
+      ...prevState,
+      current: prevState.current === CurrentState.Paused ? CurrentState.Playing : CurrentState.Paused,
+      currentMenu: prevState.currentMenu === Menu.Pause ? Menu.None : Menu.Pause,
+    }));
 
   return <GameContext.Provider value={{ gameState, isHit, setGameState }}>{children}</GameContext.Provider>;
 }
