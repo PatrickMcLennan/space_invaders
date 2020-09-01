@@ -4,7 +4,6 @@ use wasm_bindgen::prelude::*;
 mod alien;
 mod game;
 mod laser;
-mod spaceship;
 
 #[wasm_bindgen]
 extern "C" {
@@ -17,6 +16,6 @@ pub fn helloworld(name: &str) {
 }
 
 #[wasm_bindgen]
-pub fn start_game(spaceship: web_sys::HtmlElement) -> game::Game {
-    game::Game::new(spaceship)
+pub fn start_game() -> game::Game {
+    game::Game::new()
 }

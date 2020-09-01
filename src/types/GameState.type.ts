@@ -3,16 +3,20 @@ import { Dispatch, SetStateAction } from "react";
 export enum CurrentState {
   Lost = `LOST`,
   Won = `WON`,
-  Paused = `PAUSED`,
   Playing = `PLAYING`,
-  Intro = `INTRO`,
 }
 
 export enum Menu {
   Pause = `PAUSE`,
-  Start = `START`,
+  Intro = `INTRO`,
   HighScores = `HIGH_SCORES`,
-  None = `NONE`,
+  ChooseDifficulty = `CHOOSE_DIFFICULTY`,
+}
+
+export enum Difficulty {
+  Normal = `NORMAL`,
+  Drinking = `DONT_DRINK_AND_FLY`,
+  CarpalTunnel = `CARPAL_TUNNEL`,
 }
 
 export type GameState = {
@@ -20,6 +24,7 @@ export type GameState = {
   isHit: boolean;
   current: CurrentState[keyof CurrentState];
   currentMenu: Menu[keyof Menu];
+  difficulty: Difficulty[keyof Difficulty];
 };
 
 export type SetGameState = Dispatch<SetStateAction<GameState>>;

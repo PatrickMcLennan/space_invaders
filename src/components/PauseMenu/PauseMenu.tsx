@@ -6,7 +6,7 @@ import { menuMountAnimation } from "../../styles/animations";
 import { useGameState } from "../../hooks/useContext";
 import { CurrentState } from "../../types/GameState.type";
 
-function PauseMenu() {
+function PauseMenu(): JSX.Element {
   const { setGameState } = useGameState();
   const section: MutableRefObject<HTMLElement> = useRef(null);
 

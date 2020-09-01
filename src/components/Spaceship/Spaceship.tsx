@@ -1,85 +1,58 @@
 import React, { useRef, RefObject, useEffect } from "react";
 
-import { useMotionValue, useAnimation } from "framer-motion";
+import { useMotionValue } from "framer-motion";
 import { useWasm } from "../../hooks/useContext";
-import { AcceptedKey } from "../../types/Keypresses.type";
-import { ElementCoords } from "../../types/ElementCoords";
 import { SVG } from "./Spaceship.style";
+import kd from "keydrown";
 
-function keyReducer({ key }: KeyboardEvent): AcceptedKey {
-  switch (key.toLowerCase()) {
-    case `arrowup`:
-    case `up`:
-    case `w`:
-      return AcceptedKey.Up;
-    case `arrowdown`:
-    case `down`:
-    case `s`:
-      return AcceptedKey.Down;
-    case `arrowright`:
-    case `right`:
-    case `d`:
-      return AcceptedKey.Right;
-    case `arrowleft`:
-    case `left`:
-    case `a`:
-      return AcceptedKey.Left;
-    case ` `:
-      return AcceptedKey.Shoot;
-    case `escape`:
-      return AcceptedKey.Pause;
-    default:
-      return null;
-  }
+function updateCoord(coord, plusBoolean) {
+  coord.set(plusBoolean ? coord.get() + 5 : coord.get() - 5);
+  return coord.get();
 }
 
 export function Spaceship() {
   const { wasm, setWasm } = useWasm();
-  const [x, y]: [ElementCoords["x"], ElementCoords["y"]] = [useMotionValue(0), useMotionValue(0)];
+  const [x, y] = [useMotionValue(10), useMotionValue(10)];
   const spaceship: RefObject<SVGSVGElement> = useRef(null);
-  const controls = useAnimation();
 
-  controls.start({
-    x: x.get(),
-    y: y.get(),
-  });
-
-  const keyIsDown = (e) => {
-    const key: AcceptedKey = keyReducer(e);
-    if (!key) return;
-    if (key === AcceptedKey.Shoot) return wasm.shoot();
-    else if (key === AcceptedKey.Up) y.set(y.get() - 20);
-    else if (key === AcceptedKey.Right) x.set(x.get() + 20);
-    else if (key === AcceptedKey.Down) y.set(y.get() + 20);
-    else if (key === AcceptedKey.Left) x.set(x.get() - 20);
-    return controls.start({
-      x: x.get(),
-      y: y.get(),
-    });
-  };
-
-  const keyIsUp = (e) => {
-    const key: AcceptedKey = keyReducer(e);
-    if (!key || e.repeat || e.key === AcceptedKey.Shoot) return;
-    else return;
-  };
+  const placeShip = () => (spaceship.current.style.transform = `translate(${x.get()}px, ${y.get()}px)`);
 
   useEffect(() => {
-    console.log(wasm);
-    setWasm((prevWasm) => prevWasm.start_game(spaceship.current));
-    window.addEventListener(`keydown`, keyIsDown);
-    window.addEventListener(`keyup`, keyIsUp);
+    kd.run(() => kd.tick());
+    [`UP`, `W`].forEach((selector) => {
+      kd[selector].down(() => {
+        spaceship.current
+          .animate({ transform: `translate(${x.get()}px, ${updateCoord(y, false)}px)` }, 100)
+          .finished.then(placeShip);
+      });
+    });
+    [`RIGHT`, `D`].forEach((selector) => {
+      kd[selector].down(() =>
+        spaceship.current
+          .animate({ transform: `translate(${updateCoord(x, true)}px, ${y.get()}px)` }, 100)
+          .finished.then(placeShip)
+      );
+    });
+    [`DOWN`, `S`].forEach((selector) => {
+      kd[selector].down(() =>
+        spaceship.current
+          .animate({ transform: `translate(${x.get()}px, ${updateCoord(y, true)}px)` }, 100)
+          .finished.then(placeShip)
+      );
+    });
+    [`LEFT`, `A`].forEach((selector) => {
+      kd[selector].down(() =>
+        spaceship.current
+          .animate({ transform: `translate(${updateCoord(x, false)}px, ${y.get()}px)` }, 100)
+          .finished.then(placeShip)
+      );
+    });
+    kd.SPACE.down(() => wasm.shoot(x.get(), y.get()));
   }, [wasm]);
 
   return (
     <>
-      <SVG
-        version="1.1"
-        animate={controls}
-        // style={{ x: x.get(), y: y.get() }}
-        ref={spaceship}
-        viewBox="0 0 572.146 572.146"
-      >
+      <SVG version="1.1" ref={spaceship} viewBox="0 0 572.146 572.146">
         <g>
           <g>
             <path

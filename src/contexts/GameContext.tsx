@@ -1,5 +1,5 @@
 import React, { Context, createContext, useState, Consumer, useEffect } from "react";
-import { GameState, SetGameState, CurrentState, Menu, GameContextProvider } from "../types/GameState.type";
+import { GameState, SetGameState, CurrentState, Menu, GameContextProvider, Difficulty } from "../types/GameState.type";
 
 import { AcceptedKey } from "../types/Keypresses.type";
 
@@ -9,8 +9,9 @@ export function GameStateProvider({ children }) {
   const [gameState, setGameState]: [GameState, SetGameState] = useState({
     health: 5,
     isHit: false,
-    current: CurrentState.Intro,
-    currentMenu: null,
+    current: CurrentState.Playing,
+    currentMenu: Menu.Intro,
+    difficulty: Difficulty.Normal,
   });
 
   const isHit = () => {
@@ -20,6 +21,7 @@ export function GameStateProvider({ children }) {
       isHit: true,
       current: newHealth === 0 ? CurrentState.Lost : prevState.current,
       currentMenu: prevState.currentMenu,
+      difficulty: prevState.difficulty,
     }));
 
     if (newHealth !== 0)
@@ -37,8 +39,7 @@ export function GameStateProvider({ children }) {
   const pauseGame = () =>
     setGameState((prevState) => ({
       ...prevState,
-      current: prevState.current === CurrentState.Paused ? CurrentState.Playing : CurrentState.Paused,
-      currentMenu: prevState.currentMenu === Menu.Pause ? Menu.None : Menu.Pause,
+      currentMenu: prevState.currentMenu === Menu.Pause ? null : Menu.Pause,
     }));
 
   return <GameContext.Provider value={{ gameState, isHit, setGameState }}>{children}</GameContext.Provider>;

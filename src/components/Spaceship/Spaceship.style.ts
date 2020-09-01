@@ -1,12 +1,13 @@
 import styled from "styled-components";
-import { motion } from "framer-motion";
 
-export const SVG = styled(motion.svg)`
+export const SVG = styled.svg`
   ${({ theme: { svgSize } }) => svgSize};
   display: block;
-  margin: auto auto 50px auto;
+  position: absolute;
   fill: white;
   backface-visibility: visible;
   perspective: 500px;
   transition: all 0.2s;
+  top: 50%;
+  left: 49%;
 `;

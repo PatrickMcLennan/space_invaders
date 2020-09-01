@@ -23,8 +23,7 @@ export function IntroMenu(): JSX.Element {
                 onClick={() =>
                   setGameState((prevState) => ({
                     ...prevState,
-                    current: CurrentState.Playing,
-                    currentMenu: null,
+                    currentMenu: Menu.ChooseDifficulty,
                   }))
                 }
                 ref={playButton}
@@ -33,14 +32,10 @@ export function IntroMenu(): JSX.Element {
               </NavButton>
             </li>
             <li>
-              <NavButton>How To Play</NavButton>
-            </li>
-            <li>
               <NavButton
                 onClick={() =>
                   setGameState((prevState) => ({
                     ...prevState,
-                    current: CurrentState.Paused,
                     currentMenu: Menu.HighScores,
                   }))
                 }
