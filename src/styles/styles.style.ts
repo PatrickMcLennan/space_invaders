@@ -79,10 +79,15 @@ export const GlobalStyles: GlobalStyleComponent<{}, {}> = createGlobalStyle`
     }
 
     .laser {
-        height: 40px;
-        width: 30px;
+        height: 45px;
+        width: 10px;
         position: absolute;
-        border:1px solid red;
+        background-color: white;
+        border-radius: 5px;
+        transform-origin: bottom bottom;
+        scale: 0;
+        transform: scaleY(1) ;
+        transition: all 1s ease-out;
 
         svg {
             fill: white;

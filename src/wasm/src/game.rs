@@ -4,6 +4,8 @@ use wasm_bindgen::prelude::*;
 use crate::alien::Alien;
 use crate::laser::Laser;
 
+use web_sys::Element;
+
 fn get_dom() -> web_sys::Document {
     let window = web_sys::window().expect("There is no window, run for your life");
     let document = window.document().expect("There is no document");
@@ -15,6 +17,7 @@ pub struct Game {
     lasers: Vec<Laser>,
     aliens: Vec<Alien>,
     dom: web_sys::Document,
+    spaceship: Element,
 }
 
 #[wasm_bindgen]
@@ -24,6 +27,9 @@ impl Game {
             lasers: Vec::new(),
             aliens: Vec::new(),
             dom: get_dom(),
+            spaceship: get_dom()
+                .get_element_by_id("spaceship")
+                .expect("A Spaceship could not be found"),
         }
     }
 
@@ -34,8 +40,8 @@ impl Game {
         }
     }
 
-    pub fn shoot(&mut self, x: i32, y: i32) {
-        let laser = Laser::new(x, y, self.lasers.len());
+    pub fn shoot(&mut self) {
+        let laser = Laser::new(self.lasers.len(), &self.spaceship);
         laser.write_to_dom(&self.dom);
         self.lasers.push(laser);
     }

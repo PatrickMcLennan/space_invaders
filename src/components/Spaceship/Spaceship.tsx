@@ -6,7 +6,7 @@ import { SVG } from "./Spaceship.style";
 import kd from "keydrown";
 
 function updateCoord(coord, plusBoolean) {
-  coord.set(plusBoolean ? coord.get() + 5 : coord.get() - 5);
+  coord.set(plusBoolean ? coord.get() + 10 : coord.get() - 10);
   return coord.get();
 }
 
@@ -47,12 +47,15 @@ export function Spaceship() {
           .finished.then(placeShip)
       );
     });
-    kd.SPACE.down(() => wasm.shoot(x.get(), y.get()));
+    window.addEventListener(`keydown`, (e) => {
+      if (e.key === ` `) return wasm.shoot();
+      else return;
+    });
   }, [wasm]);
 
   return (
     <>
-      <SVG version="1.1" ref={spaceship} viewBox="0 0 572.146 572.146">
+      <SVG version="1.1" id="spaceship" ref={spaceship} viewBox="0 0 572.146 572.146">
         <g>
           <g>
             <path
